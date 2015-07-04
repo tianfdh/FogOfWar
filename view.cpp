@@ -1,3 +1,28 @@
+BOOL PreCreateWindow(CREATESTRUCT& cs) 
+{
+	if (!CWnd::PreCreateWindow(cs))
+		return FALSE;
+
+	cs.dwExStyle |= WS_EX_CLIENTEDGE;
+	cs.style &= ~WS_BORDER;
+	cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW|CS_VREDRAW|CS_DBLCLKS, 
+		::LoadCursor(NULL, IDC_ARROW), reinterpret_cast<HBRUSH>(COLOR_WINDOW+1), NULL);
+	
+	//-----------------------------------游戏数据初始化部分-------------------------
+	//打开音乐文件
+	mciSendString("open background.mp3 alias bgMusic ", NULL, 0, NULL);
+	mciSendString("play bgMusic repeat", NULL, 0, NULL);
+
+	//雪花
+	m_snow=new CParticle(200);
+	m_snow->Init();
+
+	//场景
+	m_scene=new CScene("bg.png");
+
+
+	return TRUE;
+}
 void OnPaint() 
 {
 	static float lastTime=timeGetTime();    
@@ -42,4 +67,22 @@ void OnPaint()
 	m_cacheCBitmap.DeleteObject();
 	//释放窗口DC
 	ReleaseDC(cDC);
+}
+void OnTimer(UINT_PTR nIDEvent)
+{
+	OnPaint();
+}
+
+
+int OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+	if (CWnd::OnCreate(lpCreateStruct) == -1)
+		return -1;
+
+	// TODO:  在此添加您专用的创建代码
+
+	//创建一个10毫秒产生一次消息的定时器
+	SetTimer(TIMER_PAINT,10,NULL);
+
+	return 0;
 }
