@@ -15,7 +15,7 @@ void CParticle::Init()
 {
 	//加载雪花图像
 	char buf[20];
-	for(int i=0;i<7;i++)    //加载七种图像
+	for(int i=0;i<7;i++) 
 	{
 		sprintf(buf,"Snow//%d.png",i);
 		m_snowMap[i].Load(buf);
